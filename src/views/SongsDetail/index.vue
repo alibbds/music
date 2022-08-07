@@ -65,6 +65,7 @@ export default {
     return {
       //控制歌词的展开与收缩
       flag: true,
+      //分页参数
       offset: 0,
     };
   },
@@ -88,6 +89,7 @@ export default {
     },
   },
   methods: {
+    //获取初始数据
     init() {
       this.$store.dispatch("songsDetail/getSongInfo", this.$route.params.id);
       this.$store.dispatch(
@@ -101,6 +103,7 @@ export default {
         limit: 20,
       });
     },
+    //下一页，上一页或具体页的跳转
     handleCurrentChange(currentPage) {
       this.offset = (currentPage - 1) * 20;
       this.$store.dispatch("songsDetail/getSongComment", {
@@ -110,12 +113,10 @@ export default {
       });
       this.$nextTick(() => {
         console.log(this.$refs.CommentList);
-        window.scrollTo({
-          top: this.$refs.CommentList.$el.offsetTop - 50,
-        });
+        this.$refs.CommentList.$el.scrollIntoView({behavior:'smooth'});
       });
     },
-    //喜欢该歌曲
+    //喜欢该歌曲（暂时不用）
     async like() {
       try {
         await this.$store.dispatch("songsDetail/getSongLike", {
@@ -270,7 +271,7 @@ export default {
       }
     }
     .pagination {
-      margin: 15px 0;
+      margin: 40px 0;
       display: flex;
       justify-content: center;
     }

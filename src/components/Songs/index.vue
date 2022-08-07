@@ -10,7 +10,9 @@
       <el-table-column type="index" label="序号" width="50"> </el-table-column>
       <el-table-column prop="name" label="歌曲" :width="180 + width">
         <template slot-scope="{ row }">
-          <span class="musicName" @click="goSongsDetail(row.id)">{{ row.name }}</span>
+          <span class="musicName" @click="goSongsDetail(row.id)">{{
+            row.name
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="ar[0].name" label="歌手" width="130">
@@ -18,7 +20,7 @@
           <span
             class="artist"
             @click="goArtistDetail(item.id)"
-            v-for="item of row.ar.slice(0,2)"
+            v-for="item of row.ar.slice(0, 2)"
             :key="item.id"
             >{{ item.name }}</span
           >
@@ -78,6 +80,7 @@ export default {
         },
       });
     },
+    //点击进入专辑页。
     goAlbumDetail(row) {
       this.$router.push({
         name: "Albumdetail",
@@ -86,14 +89,14 @@ export default {
         },
       });
     },
-    goSongsDetail(id){
+    goSongsDetail(id) {
       this.$router.push({
-        name:'Songsdetail',
-        params:{
-          id
-        }
-      })
-    }
+        name: "Songsdetail",
+        params: {
+          id,
+        },
+      });
+    },
   },
 };
 </script>

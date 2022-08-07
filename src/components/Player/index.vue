@@ -18,7 +18,10 @@
         <i class="el-icon-caret-right" @click="next"></i>
       </div>
       <div class="songInfo">
-        <img :src="currentSong.cover  || require('@/assets/img/空图.webp')" alt="" />
+        <img
+          :src="currentSong.cover || require('@/assets/img/空图.webp')"
+          alt=""
+        />
         <div class="infoText">
           <div class="text">
             <span class="mname">{{ currentSong.name }}</span>
@@ -65,18 +68,24 @@
         </div>
       </div>
     </div>
-    <el-drawer title="" :visible.sync="drawer" :with-header="false" :modal-append-to-body="false" :size="500">
-      <PlayList @closeDrawer ="drawer = false"/>
+    <el-drawer
+      title=""
+      :visible.sync="drawer"
+      :with-header="false"
+      :modal-append-to-body="false"
+      :size="500"
+    >
+      <PlayList @closeDrawer="drawer = false" />
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { mapState,mapGetters } from "vuex";
-import PlayList from './PlayList';
+import { mapState, mapGetters } from "vuex";
+import PlayList from "./PlayList";
 export default {
   name: "Player",
-  components:{ PlayList },
+  components: { PlayList },
   data() {
     return {
       //歌曲时长
@@ -87,6 +96,8 @@ export default {
       progress: 0,
       //歌曲是否暂停
       isPaused: true,
+      //当前歌曲是否播放完
+      ended:false,
       //声音控制器的开关
       isShowSoundsControll: false,
       //声音进度条
@@ -97,7 +108,7 @@ export default {
   },
   computed: {
     ...mapState("songs", ["currentSong"]),
-    ...mapGetters('songs',['isShowPlayer']),
+    ...mapGetters("songs", ["isShowPlayer"]),
   },
   methods: {
     //跳转到指定时间点（歌曲）
@@ -113,16 +124,27 @@ export default {
     },
     //调整声音大小
     checkSounds(value) {
-      if(JSON.stringify(this.currentSong) !== '{}'){
+      if (JSON.stringify(this.currentSong) !== "{}") {
         this.$refs.player.volume = value / 100;
       }
     },
-    //获取歌曲播放状态（当前播放时间，是否暂停）
+    //获取歌曲播放状态（当前播放时间，是否暂停,是否播完）
     getCurrentTime() {
       this.isPaused = this.$refs.player.paused;
-      this.currentTime = `${parseInt(
-        this.$refs.player.currentTime / 60
-      )}:${parseInt(this.$refs.player.currentTime % 60)}`;
+      let min = null;
+      let sec = null;
+      if (parseInt(this.$refs.player.currentTime / 60) < 10) {
+        min = `0${parseInt(this.$refs.player.currentTime / 60)}`;
+      } else {
+        min = `${parseInt(this.$refs.player.currentTime / 60)}`;
+      }
+      if (parseInt(this.$refs.player.currentTime % 60) < 10) {
+        sec = `0${parseInt(this.$refs.player.currentTime % 60)}`;
+      } else {
+        sec = `${parseInt(this.$refs.player.currentTime % 60)}`;
+      }
+      this.currentTime =  `${min}:${sec}`;
+      this.ended = this.$refs.player.ended;
     },
     //点击icon播放或暂停
     playOrPause() {
@@ -132,12 +154,23 @@ export default {
         this.$refs.player.pause();
       }
     },
-    showPlayer(){
+    showPlayer() {
       console.log(666);
     },
-    //控制播放器的显影
-    before() {},
-    next() {},
+    //上一首
+    before() {
+      this.$store.commit("songs/SETCURRENTSONG", { type: -1 });
+      this.$nextTick(() => {
+        this.$refs.player.play();
+      });
+    },
+    //下一首
+    next() {
+      this.$store.commit("songs/SETCURRENTSONG", { type: 1 });
+      this.$nextTick(() => {
+        this.$refs.player.play();
+      });
+    },
   },
   mounted() {
     this.$bus.$on("play", () => {
@@ -146,9 +179,19 @@ export default {
         this.$refs.player.volume = this.volume / 100;
         await this.$refs.player.play();
         this.$refs.player.addEventListener("timeupdate", this.getCurrentTime);
-        this.duration = `${parseInt(
-          this.$refs.player.duration / 60
-        )}:${parseInt(this.$refs.player.duration % 60)}`;
+        let min = null;
+        let sec = null;
+        if (parseInt(this.$refs.player.duration / 60) < 10) {
+          min = `0${parseInt(this.$refs.player.duration / 60)}`;
+        } else {
+          min = `${parseInt(this.$refs.player.duration / 60)}`;
+        }
+        if (parseInt(this.$refs.player.duration % 60) < 10) {
+          sec = `0${parseInt(this.$refs.player.duration % 60)}`;
+        } else {
+          sec = `${parseInt(this.$refs.player.duration % 60)}`;
+        }
+        this.duration = `${min}:${sec}`;
       });
     });
     this.$bus.$on("pause", () => {
@@ -157,8 +200,8 @@ export default {
       });
     });
   },
-  created(){
-    window.addEventListener('onmousemove',this.showPlayer);
+  created() {
+    window.addEventListener("onmousemove", this.showPlayer);
   },
   watch: {
     currentTime(newValue) {
@@ -169,6 +212,11 @@ export default {
       let num2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]);
       this.progress = (num2 / num1) * 100;
     },
+    ended(newValue){
+      if(newValue){
+        this.next();
+      }
+    }
   },
   beforeDestroy() {
     this.$refs.player.removeEventListener("timeupdate", this.getCurrentTime);
@@ -188,18 +236,12 @@ export default {
   }
   .spaceShow {
     width: 100%;
-    height: 45px;
+    height: 15px;
   }
   .player {
     width: 100%;
     height: 60px;
-    background-image: linear-gradient(
-      72deg,
-      #6d0dd6,
-      #9528af,
-      #ad3e88,
-      #bc5261
-    );
+    background-color: #ccccff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -228,10 +270,12 @@ export default {
         flex-direction: column;
         margin-left: 15px;
         .text {
-          color: #dbf4f5;
+          color: #222;
+          opacity: 0.5;
+          font-weight: bold;
           span {
             &:hover {
-              color: #a1b4b5;
+              color: #000;
               cursor: pointer;
             }
           }
@@ -251,9 +295,8 @@ export default {
             height: 10px;
           }
           .time {
-            width: 80px;
             text-align: center;
-            overflow: hidden;
+            width: 80px;
             .currentTime {
               margin-left: 15px;
             }
@@ -267,6 +310,7 @@ export default {
     .edit {
       height: 100%;
       display: flex;
+      margin-left: 15px;
       .sounds {
         position: relative;
         height: 100%;
@@ -279,8 +323,10 @@ export default {
           justify-content: center;
           text-align: center;
           svg {
+            font-size: 16px;
             &:hover {
               cursor: pointer;
+              font-size: 21px;
             }
           }
         }
@@ -344,7 +390,21 @@ export default {
   background-color: #663399;
   border: none;
 }
-.el-drawer__body{
-  
+.el-drawer__body {
+}
+.full .el-slider__button {
+  border: none;
+}
+.full .el-slider__button-wrapper {
+  width: 33px;
+  height: 33px;
+}
+.full .el-slider__runway {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.full .el-slider__bar {
+  height: 100%;
+  background-color: white;
 }
 </style>

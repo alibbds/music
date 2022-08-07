@@ -174,23 +174,27 @@ export default {
       }
     },
     //向下滚动加载数据，到达底部进入loading等待数据返回，数据返回之后才能推出loading
-    scrollUpdate:_.throttle(async function(){
-      let [scrollTop, scrollHeight, clientHeight] = [
-        document.documentElement.scrollTop,
-        document.documentElement.scrollHeight,
-        document.documentElement.clientHeight,
-      ];
-      if (scrollHeight - (clientHeight + scrollTop) <= 0) {
-        this.offset = this.offset + 30;
-        await this.$store.dispatch("artist/getArtistList", {
-          type: this.typeId[this.type.indexOf(this.clickType)],
-          area: this.areaId[this.area.indexOf(this.clickArea)],
-          initial: this.initialId[this.initial.indexOf(this.clickInitial)],
-          offset: this.offset,
-          limit: 30,
-        });
-      }
-    },30,{'leading':true}) 
+    scrollUpdate: _.throttle(
+      async function () {
+        let [scrollTop, scrollHeight, clientHeight] = [
+          document.documentElement.scrollTop,
+          document.documentElement.scrollHeight,
+          document.documentElement.clientHeight,
+        ];
+        if (scrollHeight - (clientHeight + scrollTop) <= 0) {
+          this.offset = this.offset + 30;
+          await this.$store.dispatch("artist/getArtistList", {
+            type: this.typeId[this.type.indexOf(this.clickType)],
+            area: this.areaId[this.area.indexOf(this.clickArea)],
+            initial: this.initialId[this.initial.indexOf(this.clickInitial)],
+            offset: this.offset,
+            limit: 30,
+          });
+        }
+      },
+      30,
+      { leading: true }
+    ),
   },
   watch: {
     artists(newValue) {
@@ -198,7 +202,7 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    window.removeEventListener("scroll",this.scrollUpdate)
+    window.removeEventListener("scroll", this.scrollUpdate);
     next();
   },
   created() {
@@ -211,7 +215,7 @@ export default {
     });
   },
   mounted() {
-    window.addEventListener("scroll",this.scrollUpdate)
+    window.addEventListener("scroll", this.scrollUpdate);
   },
 };
 </script>

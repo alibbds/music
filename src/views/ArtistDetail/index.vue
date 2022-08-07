@@ -13,7 +13,7 @@
           <div class="showDesc">
             <p>{{ briefDesc }}</p>
           </div>
-          <p slot="reference">{{ briefDesc }}</p>
+          <p slot="reference" class="GeneralDescription">{{ briefDesc }}</p>
         </el-popover>
         <span class="more" @click="showMore" v-if="introduction.length !== 0">更多>></span>
         <el-dialog :visible.sync="dialogTableVisible">
@@ -142,11 +142,13 @@ export default {
       width: 700px;
       height: 311px;
       margin-left: 30px;
-      p {
+      p{
         font-size: 14px;
         color: #999;
         margin-top: 20px;
         line-height: 25px;
+      }
+      .GeneralDescription {
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 5;
@@ -166,7 +168,7 @@ export default {
         .descValue {
           display: flex;
           flex-direction: column;
-          p{
+          .valueText{
             text-indent: 2em
           }
         }

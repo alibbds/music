@@ -1,4 +1,5 @@
 module.exports = {
-    //关闭eslint
-    lintOnSave: false,
-}
+  //关闭eslint
+  lintOnSave: false,
+  publicPath: "./",
+};

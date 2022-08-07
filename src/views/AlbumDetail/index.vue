@@ -31,9 +31,9 @@
           </div>
         </div>
       </div>
-      <Songs :tracks="songs" :width=0></Songs>
+      <Songs :tracks="songs" :width="0"></Songs>
       <CommentList
-        ref='CommentList'
+        ref="CommentList"
         :comment="comment"
         :commentTotal="commentTotal"
       ></CommentList>
@@ -55,7 +55,12 @@
         该作者其他专辑
       </h4>
       <div class="albumSide" v-if="hotAlbums !== []">
-        <div class="SongList" v-for="item of hotAlbums" :key="item.id">
+        <div
+          class="SongList"
+          v-for="item of hotAlbums"
+          :key="item.id"
+          @click="goAlbumDetails(item.id)"
+        >
           <img :src="item.picUrl" alt="" />
           <div class="list">
             <span class="listName">{{ item.name }}</span>
@@ -105,10 +110,19 @@ export default {
         });
       });
     },
+    goAlbumDetails(id) {
+      this.$router.push({
+        params: {
+          id,
+        },
+        name: "Albumdetail",
+      });
+    },
   },
   watch: {
     $route: {
       handler(newValue) {
+        console.log(whenKeepAliveStopWatch);
         this.$store.dispatch("albumDetail/getAlbumDetail", newValue.params.id);
         this.$store.dispatch("albumDetail/getAlbumComment", {
           id: newValue.params.id,
@@ -117,12 +131,16 @@ export default {
         });
       },
       immediate: true,
+      deep: true,
     },
     album(newValue) {
       this.$store.dispatch("albumDetail/getArtistAlbum", {
         id: newValue.artist.id,
       });
     },
+  },
+  activated() {
+    this.activatedFlag = true;
   },
 };
 </script>
@@ -211,10 +229,10 @@ export default {
     }
     width: 300px;
     .albumSide {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
       .SongList {
         width: 100%;
         height: 80px;

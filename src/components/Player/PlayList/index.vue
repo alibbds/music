@@ -43,8 +43,9 @@ export default {
     ...mapState("songs", ["audio", "currentSong"]),
   },
   methods: {
+    //双击歌曲切换歌曲
     play(row) {
-      this.$store.commit('songs/SETCURRENTSONG',row);
+      this.$store.commit('songs/SETCURRENTSONG',{song:row});
       this.$bus.$emit('play');
     },
     //清空播放列表
