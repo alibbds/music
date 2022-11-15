@@ -149,9 +149,11 @@ export default {
     //点击icon播放或暂停
     playOrPause() {
       if (this.$refs.player.paused) {
-        this.$refs.player.play();
+        // this.$refs.player.play();
+        this.$bus.$emit('play')
       } else {
-        this.$refs.player.pause();
+        // this.$refs.player.pause();
+        this.$bus.$emit('pause')
       }
     },
     showPlayer() {
@@ -181,6 +183,7 @@ export default {
         this.$refs.player.addEventListener("timeupdate", this.getCurrentTime);
         let min = null;
         let sec = null;
+        // console.log(this.$refs.player.duration / 60)
         if (parseInt(this.$refs.player.duration / 60) < 10) {
           min = `0${parseInt(this.$refs.player.duration / 60)}`;
         } else {

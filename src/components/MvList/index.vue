@@ -8,6 +8,9 @@
       >
         <div class="imgs" @click="goMvDetail(item.id)">
           <img v-lazy="item.cover?item.cover:item.imgurl" alt="" />
+          <div class="play_icon">
+            <i class="el-icon-video-play"></i>
+          </div>
         </div>
         <span class="Name">{{ item.name }}</span>
         <span class="artistName">{{ item.artistName }}</span>
@@ -60,20 +63,39 @@ export default {
   width: 192px;
   height: 144px;
   overflow: hidden;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 5px 5px;
+  position: relative;
 }
 .imgs img {
   width: 100%;
   height: 100%;
-  cursor: pointer;
+  border-radius: 5px 5px;
   transition: all 0.5s ease-in-out;
 }
-.imgs img:hover {
-  width: 120%;
-  height: 120%;
+/* mv hover 图片变大 */
+/* .imgs img:hover {
+  transform: scale(1.2);
+} */
+.imgs .play_icon{
+  position: absolute;
+  border-radius: 5px 5px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+.imgs .play_icon i{
+  font-size: 35px;
+}
+.imgs:hover .play_icon{
+  display: flex;
 }
 .Name {
   font-size: 12px;

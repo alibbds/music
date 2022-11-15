@@ -36,6 +36,7 @@ export default {
   width: 1080px;
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
   .artistInfo {
     width: 150px;
     height: 150px;
