@@ -6,7 +6,6 @@
       <audio
         :src="currentSong.url"
         ref="player"
-        v-if="isShowPlayer"
         v-show="false"
       ></audio>
       <div class="play">
@@ -108,7 +107,6 @@ export default {
   },
   computed: {
     ...mapState("songs", ["currentSong"]),
-    ...mapGetters("songs", ["isShowPlayer"]),
   },
   methods: {
     //跳转到指定时间点（歌曲）

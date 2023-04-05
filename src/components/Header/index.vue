@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <el-menu
-      default-active="/home"
+      :default-active="$route.path"
       class="el-menu-demo"
       mode="horizontal"
       router
@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       keywords: "",
+      defaultRoute:'/home'
     };
   },
   computed: {

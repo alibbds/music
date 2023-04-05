@@ -8,7 +8,7 @@
     <!-- 不需要缓存的视图组件 -->
     <router-view v-if="!$route.meta.keepAlive" class="main"></router-view>
     <Login v-if="dialogVisible"></Login>
-    <Player></Player>
+    <Player v-if="isShowPlayer"></Player>
     <el-backtop></el-backtop>
     <Footer v-show="$route.meta.footerShow"></Footer>
   </div>

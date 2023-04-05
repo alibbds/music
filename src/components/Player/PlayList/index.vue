@@ -72,24 +72,12 @@ export default {
       })
       this.$emit('closeDrawer');
     },
-    //页面关闭保存播放列表到locallstore
-    saveAudioInfoToLocallstore(){
-      localStorage.setItem('audios',JSON.stringify(this.audio))
-      localStorage.setItem('currentSong',JSON.stringify(this.currentSong))
-      localStorage.setItem('index',JSON.stringify(this.index))
-    }
   },
   watch: {
     currentSong() {
       console.log(this.$refs.elTable.bodyWrapper.clientTop);
     },
   },
-  mounted() {
-    window.addEventListener('beforeunload',this.saveAudioInfoToLocallstore)
-  },
-  beforeDestroy(){
-    window.removeEventListener('beforeunload',this.saveAudioInfoToLocallstore)
-  }
 };
 </script>
 

@@ -2,11 +2,11 @@ import { reqPlayList, reqSongDetails, reqSongsLyric, reqSongsUrl } from "@/api";
 
 const state = {
   //播放列表
-  audio: JSON.parse(localStorage.getItem('audios')) || [],
+  audio: [],
   //当前播放歌曲
-  currentSong: JSON.parse(localStorage.getItem('currentSong')) || {},
+  currentSong: {},
   //当前播放歌曲索引
-  index: JSON.parse(localStorage.getItem('index')) || 0,
+  index: 0,
 };
 const actions = {
   //获取歌词,url,信息等
