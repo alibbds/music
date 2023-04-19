@@ -4,10 +4,12 @@
     <div class="player">
       <!-- <aplayer :audio="audio" :lrcType="1" fixed ref="aplayer" /> -->
       <audio
+        id="myAudio"
         :src="currentSong.url"
         ref="player"
         v-show="false"
       ></audio>
+      <AudioVisual width="200" height="30" :analyser="analyser" :isInit='isInit'></AudioVisual>
       <div class="play">
         <i class="el-icon-caret-left" @click="before"></i>
         <i
@@ -82,11 +84,18 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import PlayList from "./PlayList";
+import AudioVisual from "./AudioVisual";
 export default {
   name: "Player",
-  components: { PlayList },
+  components: { PlayList,AudioVisual },
   data() {
     return {
+      //是否初始化音频数据（可视化）
+      isInit:false,
+      //分析器
+      analyser:null,
+      //分析数据
+      dataArry:null,
       //歌曲时长
       duration: "",
       //当前播放时长
@@ -171,6 +180,20 @@ export default {
         this.$refs.player.play();
       });
     },
+    //获取音频数据
+    initAudio(){
+      if(this.isInit){
+        return
+      }
+      const audCtx = new AudioContext();
+      const source = audCtx.createMediaElementSource(this.$refs.player);
+      this.analyser = audCtx.createAnalyser();
+      //频率（越大分析的数据越详细）
+      this.analyser.fftSize = 256
+      source.connect(this.analyser);
+      this.analyser.connect(audCtx.destination)
+      this.isInit = true
+    },
   },
   mounted() {
     this.$bus.$on("play", () => {
@@ -200,6 +223,9 @@ export default {
         this.$refs.player.pause();
       });
     });
+    this.$refs.player.onplay = this.initAudio
+    this.$refs.player.crossOrigin = 'anonymous';
+    window.parentMounted = this._isMounted
   },
   created() {
     window.addEventListener("onmousemove", this.showPlayer);
